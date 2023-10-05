@@ -2,6 +2,7 @@
 	DISPLAY_BASE_ADDRESS: 	.word 0xFFFF0000
 	BACKGROUND_COLOR:		.word 0x008d2d1f
 	LINE_COLOR:				.word 0x00FFFFFF
+	DELAY_COUNT:			.word 1000000
 
 	board:	 				.byte 0, 0, 0, 0, 0, 0, 0, 0, 0
 
@@ -54,6 +55,7 @@
 			j 		loop
 
 		game_end:
+			jal		delay
 			jal		resetBoard
 			j 		main
 
@@ -255,6 +257,13 @@
 		sb		$t0, 6($s0)
 		sb		$t0, 7($s0)
 		sb		$t0, 8($s0)
+		jr		$ra
+	
+	delay:
+		lw 		$t0, DELAY_COUNT
+		delay_loop:
+			subi	$t0, $t0, 1
+			bnez	$t0, delay_loop
 		jr		$ra
 
 	end:
