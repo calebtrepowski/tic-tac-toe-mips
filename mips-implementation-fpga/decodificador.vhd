@@ -32,29 +32,26 @@ USE IEEE.STD_LOGIC_1164.ALL;
 ENTITY decodificador IS
 	PORT (
 		ent : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+		csVGA : OUT STD_LOGIC;
 		csMem : OUT STD_LOGIC;
 		cs_dis : OUT STD_LOGIC;
 		csParPort : OUT STD_LOGIC;
-		csLCD : OUT STD_LOGIC;
 		csEntrada : OUT STD_LOGIC);
 END decodificador;
 
 ARCHITECTURE Behavioral OF decodificador IS
 
 BEGIN
+	-- VGA
+	csVGA <= '1' WHEN ent(31 DOWNTO 8) = X"FFFF00" ELSE
+		'0';
+
 	-- memoria
 	csMem <= '1' WHEN ent(31 DOWNTO 16) = X"1001" ELSE
 		'0';
 
 	-- Puerto paralelo de salida
 	csParPort <= '1' WHEN ent = X"FFFF8000" ELSE
-		'0';
-
-	-- controlador del LCD
-	csLCD <= '1' WHEN ent = X"FFFFC000" ELSE
-		'0';
-	-- controlador del Display
-	cs_dis <= '1' WHEN ent = X"FFFFE000" ELSE
 		'0';
 
 	-- habilitador de lectura de las llaves

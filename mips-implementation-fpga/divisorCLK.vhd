@@ -33,22 +33,28 @@ USE IEEE.STD_LOGIC_1164.ALL;
 
 ENTITY divisorCLK IS
 	PORT (
-		clk50mhz : IN STD_LOGIC;
+		clk100mhz : IN STD_LOGIC;
 		clk : OUT STD_LOGIC);
 END divisorCLK;
 
 -- Divisor de Frecuencia para el MIPS.
 -- La frecuencia de 50 MHz es dividida por 2.
 ARCHITECTURE Behavioral OF divisorCLK IS
-	SIGNAL tmp : STD_LOGIC := '0';
+	SIGNAL clk50mhz : STD_LOGIC := '0';
+	SIGNAL clk25mhz : STD_LOGIC := '0';
 BEGIN
-	PROCESS (clk50mhz)
+	PROCESS (clk100mhz)
 	BEGIN
-		IF clk50mhz'event AND clk50mhz = '1' THEN
-			tmp <= NOT tmp;
+		IF clk100mhz = '1' AND clk100mhz'event THEN
+			clk50mhz <= NOT clk50mhz;
 		END IF;
 	END PROCESS;
-
-	clk <= tmp;
+	PROCESS (clk50mhz)
+	BEGIN
+		IF clk50mhz = '1' AND clk50mhz'event THEN
+			clk25mhz <= NOT clk25mhz;
+		END IF;
+	END PROCESS;
+	clk <= clk25mhz;
 
 END Behavioral;

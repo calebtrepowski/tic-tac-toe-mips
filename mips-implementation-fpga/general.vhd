@@ -30,7 +30,7 @@ PACKAGE general IS
     CONSTANT NUM_BITS_MEMORIA_DATOS : INTEGER := 7;
 
     -- archivo desde donde se lee el programa a cargarse en la ROM. Se lee en tiempo de sintesis del hardware
-    CONSTANT filename : STRING := "programa.txt";
+    CONSTANT filename : STRING := "programa_pantalla_blanco.txt";
     -- tipos de datos de las memorias de instrucciones y datos del MIPS
     -- definidas segun el tamanho indicado por las constantes definidas antes
     TYPE mem_instrucciones IS ARRAY (0 TO 2 ** NUM_BITS_MEMORIA_INSTRUCCIONES - 1) OF STD_LOGIC_VECTOR(31 DOWNTO 0);

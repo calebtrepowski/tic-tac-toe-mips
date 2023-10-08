@@ -36,52 +36,19 @@ USE work.general.ALL;
 
 ENTITY mips IS
 	PORT (
-		clk50mhz : IN STD_LOGIC;
-		-- pines de reset externos los pines west y east de alrededor de la perilla de la placa
+		clk100mhz : IN STD_LOGIC;
 		reset1 : IN STD_LOGIC;
 		reset0 : IN STD_LOGIC;
-		-- entrada de los dos pulsadores de alrededor de la perilla de la placa
-		north : IN STD_LOGIC;
-		south : IN STD_LOGIC;
-		-- llaves de dos posiciones en la placa
-		sw : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
-		-- interfaz con el LCD de la placa
-		salida : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-		LCD_E : OUT STD_LOGIC;
-		LCD_RS : OUT STD_LOGIC;
-		LCD_RW : OUT STD_LOGIC;
-		LCD_DB : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-		-- puerto serial
-		rx : IN STD_LOGIC;
-		tx : OUT STD_LOGIC;
-		atn : IN STD_LOGIC;
-		-- modulo Display
-		--Dis_valor1   : in std_logic_vector(7 downto 0);
-		anodo : OUT STD_LOGIC_VECTOR (2 DOWNTO 0);
-		salida_LED : OUT STD_LOGIC_VECTOR (6 DOWNTO 0)
+		HSYNC : OUT STD_LOGIC;
+		VSYNC : OUT STD_LOGIC;
+		RGB : OUT STD_LOGIC_VECTOR (2 DOWNTO 0)
 	);
 END mips;
 
 ARCHITECTURE Behavioral OF mips IS
-	COMPONENT prog IS
-		PORT (
-			dataDeMI : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-			dataAMI : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
-			dirMI : OUT STD_LOGIC_VECTOR (NUM_BITS_MEMORIA_INSTRUCCIONES - 1 DOWNTO 0);
-			writeMI : OUT STD_LOGIC;
-			rstMIPS : OUT STD_LOGIC;
-			-- lineas de control
-			clk : IN STD_LOGIC;
-			-- puerto serial
-			rx : IN STD_LOGIC;
-			tx : OUT STD_LOGIC;
-			atn : IN STD_LOGIC
-		);
-	END COMPONENT;
-
 	COMPONENT divisorCLK IS
 		PORT (
-			clk50mhz : IN STD_LOGIC;
+			clk100mhz : IN STD_LOGIC;
 			clk : OUT STD_LOGIC
 		);
 	END COMPONENT;
@@ -187,19 +154,12 @@ ARCHITECTURE Behavioral OF mips IS
 			memread : IN STD_LOGIC;
 			tipoAcc : IN STD_LOGIC_VECTOR (2 DOWNTO 0); --tipo de operacion a realizar, cargar bytes, half word y word
 			clk : IN STD_LOGIC;
-			clk50mhz : IN STD_LOGIC;
+			clk100mhz : IN STD_LOGIC;
 			reset : IN STD_LOGIC;
-			north : IN STD_LOGIC;
-			south : IN STD_LOGIC;
-			sw : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
 			dataout : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
-			salida : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-			anodo : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
-			salida_LED : OUT STD_LOGIC_VECTOR(6 DOWNTO 0);
-			LCD_E : OUT STD_LOGIC;
-			LCD_RS : OUT STD_LOGIC;
-			LCD_RW : OUT STD_LOGIC;
-			LCD_DB : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
+			HSYNC : OUT STD_LOGIC;
+			VSYNC : OUT STD_LOGIC;
+			RGB : OUT STD_LOGIC_VECTOR (2 DOWNTO 0)
 		);
 	END COMPONENT;
 	COMPONENT mux32
@@ -323,22 +283,8 @@ ARCHITECTURE Behavioral OF mips IS
 	SIGNAL clk : STD_LOGIC;
 BEGIN
 
-	inst_prog : prog PORT MAP(
-		dataDeMI => dataDeMI,
-		dataAMI => dataAMI,
-		dirMI => dirMIprog,
-		writeMI => writeMIProg,
-		rstMIPS => rstMIPSProg,
-		-- lineas de control
-		clk => clk,
-		-- puerto serial
-		rx => rx,
-		tx => tx,
-		atn => atn
-	);
-
 	Inst_divisorCLK : divisorCLK PORT MAP(
-		clk50mhz => clk50mhz,
+		clk100mhz => clk100mhz,
 		clk => clk
 	);
 
@@ -422,19 +368,12 @@ BEGIN
 		memread => memread,
 		tipoAcc => tipoAcc,
 		clk => clk,
-		clk50mhz => clk50mhz,
+		clk100mhz => clk100mhz,
 		reset => reset,
-		north => north,
-		south => south,
-		sw => sw,
 		dataout => salida_mem,
-		salida => salida,
-		anodo => anodo,
-		salida_LED => salida_LED,
-		LCD_E => LCD_E,
-		LCD_RS => LCD_RS,
-		LCD_RW => LCD_RW,
-		LCD_DB => LCD_DB
+		HSYNC => HSYNC,
+		VSYNC => VSYNC,
+		RGB => RGB
 	);
 	Inst_mux32_branch : mux32 PORT MAP(
 		e0 => pc_mas_4,
